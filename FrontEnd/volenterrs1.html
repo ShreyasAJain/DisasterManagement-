@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteers Information</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(29, 53, 87, 0.8), rgba(29, 53, 87, 0.9)), url('/api/placeholder/1200/600') no-repeat center center/cover;
+            
+            padding: 20px;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container + .container{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .search-input {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            min-width: 250px;
+        }
+        
+        .add-button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .add-button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        /* Volunteers Grid */
+        .volunteers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        /* Volunteer Card */
+        .volunteer-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            gap: 16px;
+            transition: background-color 0.2s;
+            
+        }
+        
+        .volunteer-card:hover {
+            background-color: #f9fafb;
+        }
+        
+        .volunteer-image {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #e5e5e5;
+        }
+        
+        .volunteer-info {
+            flex: 1;
+        }
+        
+        .volunteer-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .volunteer-details {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        
+        .icon {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        
+        .skill-tag {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 24px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            user-select: none;
+        }
+        
+        .checkbox-label:hover {
+            background-color: #f9fafb;
+        }
+        
+        .checkbox-input {
+            margin-right: 4px;
+        }
+        
+        .submit-button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .submit-button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .volunteer-banner {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .banner-content {
+            flex: 1;
+        }
+        
+        .banner-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0369a1;
+            margin-bottom: 4px;
+        }
+        
+        .banner-text {
+            color: #0c4a6e;
+        }
+        
+        .banner-button {
+            background-color: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .banner-button:hover {
+            background-color: #0284c7;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header, .volunteer-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-container, .banner-button {
+                width: 100%;
+                margin-top: 12px;
+            }
+            
+            .search-input {
+                flex: 1;
+            }
+            
+            .volunteers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Volunteer Sign-up Banner -->
+        <div class="volunteer-banner">
+            <div class="banner-content">
+                <h2 class="banner-title">Make a Difference Today!</h2>
+                <p class="banner-text">Join our team of dedicated volunteers and help communities in need during disaster response.</p>
+            </div>
+            <button class="banner-button" id="volunteerSignupBtn">Become a Volunteer</button>
+        </div>
+        
+        <div class="header">
+            <h1 class="title">Volunteers Information</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search volunteers...">
+                <button class="add-button" id="addVolunteerBtn">Add Volunteer</button>
+            </div>
+        </div>
+        
+        <div class="volunteers-grid" id="volunteersGrid">
+            <!-- Volunteer cards will be added here by JavaScript -->
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Volunteer Sign-up Banner -->
+        
+    
+        <div class="volunteers-grid" id="volunteersGrid">
+            <!-- Volunteer cards will be added here by JavaScript -->
+        </div>
+    
+        <!-- View All Volunteers Section -->
+        <div class="view-all-section" style="position: relative; margin-top: 2rem; background-color: #f9f9f9; padding: 2rem; border-radius: 8px;">
+            <h2 style="margin-bottom: 1rem;">Want to see everyone who's making a difference?</h2>
+            <p style="margin-bottom: 2.5rem;">Click the button below to explore all our amazing volunteers.</p>
+    
+            <!-- Button positioned at bottom-left -->
+            <a href="https://docs.google.com/spreadsheets/d/1EXWwksvncbtGinQ9tUDgf-2nlRKdvAcetf59wg0w8gk/edit?usp=sharing" 
+               style="position: absolute; bottom: 1rem; left: 1rem; background-color: #007BFF; color: white; padding: 0.5rem 1rem; border-radius: 5px; text-decoration: none;"
+               class="view-all-button">
+               View All Volunteers
+            </a>
+        </div>
+    </div>
+    
+    
+    <!-- Volunteer Sign-up Modal -->
+    <div class="modal" id="volunteerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Volunteer Sign-up</h2>
+                <button class="close-button" id="closeModal">&times;</button>
+            </div>
+            <form id="volunteerForm">
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name *</label>
+                    <input type="text" id="name" name="name" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location" class="form-label">Location *</label>
+                    <input type="text" id="location" name="location" class="form-input" placeholder="City, State/Province" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactNumber" class="form-label">Contact Number *</label>
+                    <input type="tel" id="contactNumber" name="contactNumber" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address *</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Skills (Select all that apply) *</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="skills" value="Medical" class="checkbox-input"> Medical
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="skills" value="Logistics" class="checkbox-input"> Logistics
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="skills" value="Transportation" class="checkbox-input"> Transportation
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="skills" value="Communications" class="checkbox-input"> Communications
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="skills" value="First Aid" class="checkbox-input"> First Aid
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="skills" value="Shelter Management" class="checkbox-input"> Shelter Management
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="skills" value="Languages" class="checkbox-input"> Languages
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="skills" value="Technical" class="checkbox-input"> Technical
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="availability" class="form-label">Availability *</label>
+                    <select id="availability" name="availability" class="form-input" required>
+                        <option value="">Select your availability</option>
+                        <option value="Weekdays">Weekdays</option>
+                        <option value="Weekends">Weekends</option>
+                        <option value="Evenings">Evenings</option>
+                        <option value="Full-time">Full-time during emergencies</option>
+                        <option value="On-call">On-call (24/7)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="experience" class="form-label">Previous Volunteer Experience</label>
+                    <textarea id="experience" name="experience" class="form-input" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="submit-button">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample volunteer data
+        let volunteers = [
+            {
+                id: 1,
+                name: "Subramanyam",
+                location: "Chennai, TN",
+                contactNumber: "044-555-1234",
+                skills: ["Medical", "Logistics"],
+                status: "Active",
+                imageUrl: "https://via.placeholder.com/100"
+            },
+            {
+                id: 2,
+                name: "Akriti",
+                location: "Kochi, Kerala",
+                contactNumber: "0484-555-2345",
+                skills: ["Transportation", "Communications"],
+                status: "Active",
+                imageUrl: "https://via.placeholder.com/100"
+            },
+            {
+                id: 3,
+                name: "Aarav Joshi",
+                location: "Yangon, Myanmar",
+                contactNumber: "959-555-3456",
+                skills: ["Shelter Management", "First Aid"],
+                status: "On Call",
+                imageUrl: "https://via.placeholder.com/100"
+            }
+        ];
+
+        // DOM elements
+        const volunteersGrid = document.getElementById('volunteersGrid');
+        const searchInput = document.getElementById('searchInput');
+        const addVolunteerBtn = document.getElementById('addVolunteerBtn');
+        const volunteerSignupBtn = document.getElementById('volunteerSignupBtn');
+        const volunteerModal = document.getElementById('volunteerModal');
+        const closeModal = document.getElementById('closeModal');
+        const volunteerForm = document.getElementById('volunteerForm');
+
+        // Render all volunteers
+        function renderVolunteers(volunteersToRender) {
+            volunteersGrid.innerHTML = '';
+            
+            volunteersToRender.forEach(volunteer => {
+                const volunteerCard = document.createElement('div');
+                volunteerCard.className = 'volunteer-card';
+                
+                const skillsHTML = volunteer.skills.map(skill => 
+                    `<span class="skill-tag">${skill}</span>`
+                ).join('');
+                
+                volunteerCard.innerHTML = `
+                    <img src="${volunteer.imageUrl}" alt="${volunteer.name}" class="volunteer-image">
+                    <div class="volunteer-info">
+                        <h3 class="volunteer-name">${volunteer.name}</h3>
+                        <div class="volunteer-details">
+                            <div class="info-row">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                <span>${volunteer.location}</span>
+                            </div>
+                            <div class="info-row">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                </svg>
+                                <span>${volunteer.contactNumber}</span>
+                            </div>
+                            <div class="skills-container">
+                                ${skillsHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                volunteersGrid.appendChild(volunteerCard);
+            });
+        }
+
+        // Filter volunteers based on search term
+        function filterVolunteers(searchTerm) {
+            return volunteers.filter(volunteer => 
+                volunteer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                volunteer.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                volunteer.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+        }
+
+        // Generate random ID for new volunteers
+        function generateId() {
+            return Math.floor(Math.random() * 10000) + 4;
+        }
+
+        // Open modal function
+        function openModal() {
+            volunteerModal.style.display = 'flex';
+        }
+
+        // Close modal function
+        function closeModalFunc() {
+            volunteerModal.style.display = 'none';
+            volunteerForm.reset();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value;
+            const filteredVolunteers = filterVolunteers(searchTerm);
+            renderVolunteers(filteredVolunteers);
+        });
+
+        addVolunteerBtn.addEventListener('click', openModal);
+        volunteerSignupBtn.addEventListener('click', openModal);
+        closeModal.addEventListener('click', closeModalFunc);
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (e) => {
+            if (e.target === volunteerModal) {
+                closeModalFunc();
+            }
+        });
+
+        // Handle form submission
+        volunteerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get selected skills
+            const selectedSkills = Array.from(document.querySelectorAll('input[name="skills"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            if (selectedSkills.length === 0) {
+                alert("Please select at least one skill");
+                return;
+            }
+            
+            // Create new volunteer object
+            const newVolunteer = {
+                id: generateId(),
+                name: document.getElementById('name').value,
+                location: document.getElementById('location').value,
+                contactNumber: document.getElementById('contactNumber').value,
+                email: document.getElementById('email').value,
+                skills: selectedSkills,
+                status: "Pending",
+                imageUrl: "https://via.placeholder.com/100"
+            };
+            
+            // Add to volunteers array
+            volunteers.push(newVolunteer);
+            
+            // Re-render volunteers
+            renderVolunteers(volunteers);
+            
+            // Show success message
+            alert("Thank you for volunteering! Your application has been received.");
+            
+            // Close modal and reset form
+            closeModalFunc();
+        });
+
+        // Initial render
+        renderVolunteers(volunteers);
+    </script>
+</body>
+</html>

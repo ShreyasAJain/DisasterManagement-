@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RespondConnect | Disaster Relief Dashboard</title>
+    <style>
+        :root {
+            --primary: #e63946;
+            --secondary: #1d3557;
+            --light: #f1faee;
+            --accent: #a8dadc;
+            --dark: #457b9d;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 240px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-logo span {
+            color: var(--primary);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--primary);
+            color: white;
+            border-left: 4px solid var(--light);
+        }
+        
+        .sidebar-menu i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: 1.5rem;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+        
+        .notification-icon {
+            margin-left: 1rem;
+            position: relative;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+        }
+        
+        .stat-card {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .stat-icon.volunteers {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--info);
+        }
+        
+        .stat-icon.tasks {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--primary);
+        }
+        
+        .stat-icon.resources {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+        
+        .stat-icon.alerts {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+        
+        .stat-info h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-info p {
+            color: #666;
+            font-size: 0.875rem;
+        }
+        
+        .disaster-status {
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: var(--secondary);
+        }
+        
+        .card-action {
+            color: var(--primary);
+            background: none;
+            border: none;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+        
+        .status-labels {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .status-label {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-label.active {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--info);
+        }
+        
+        .status-label i {
+            margin-right: 0.25rem;
+        }
+        
+        .progress-container {
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            width: 75%;
+            background-color: var(--info);
+        }
+        
+        .percentage-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        /* Map Section */
+        .map-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            height: 400px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .map-container {
+            height: 100%;
+            width: 100%;
+            background-color: #cfd8dc;
+        }
+        
+        .map-controls {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .map-control-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            background-color: white;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .map-legend {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .legend-color.red {
+            background-color: var(--danger);
+        }
+        
+        .legend-color.orange {
+            background-color: var(--warning);
+        }
+        
+        .legend-color.blue {
+            background-color: var(--info);
+        }
+        
+        .legend-color.green {
+            background-color: var(--success);
+        }
+        
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background-color: #f9f9f9;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.875rem;
+        }
+        
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 0.875rem;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-badge.pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-badge.completed {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+        
+        .status-badge.in-progress {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--info);
+        }
+        
+        .status-badge.critical {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+        
+        .avatar-group {
+            display: flex;
+        }
+        
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ddd;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: -8px;
+            border: 2px solid white;
+        }
+        
+        .avatar:last-child {
+            margin-right: 0;
+        }
+        
+        .avatar.more {
+            background-color: #f1f1f1;
+        }
+        
+        .action-btn {
+            border: none;
+            background: none;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        
+        /* Two column layout */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            grid-gap: 1.5rem;
+        }
+        
+        .emergency-contacts {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .contact-role {
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        .contact-action {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .contact-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #f1f1f1;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .contact-btn.call {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+        
+        .recent-updates {
+            margin-top: 1.5rem;
+        }
+        
+        .update-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .update-item:last-child {
+            border-bottom: none;
+        }
+        
+        .update-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .update-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+        
+        .update-author {
+            font-weight: 600;
+        }
+        
+        .update-time {
+            font-size: 0.75rem;
+            color: #666;
+            margin-left: auto;
+        }
+        
+        .update-content {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .update-meta {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        .update-location {
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+        }
+        
+        .update-location i {
+            margin-right: 0.25rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .two-column-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                grid-column: 1;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                Respond<span>Connect</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><i>📊</i> Dashboard</a></li>
+                <li><a href="Volunteers.html"><i>👥</i> Volunteers</a></li>
+                <li><a href="#"><i>📦</i> Resources</a></li>
+                <li><a href="#"><i>🗺</i> Map View</a></li>
+                <li><a href="#"><i>📋</i> Tasks</a></li>
+                <li><a href="#"><i>🚨</i> Alerts</a></li>
+                <li><a href="#"><i>📱</i> Communications</a></li>
+                <li><a href="#"><i>📈</i> Reports</a></li>
+                <li><a href="#"><i>⚙</i> Settings</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>Current Disaster: Hurricane Relief</p>
+                <p>Status: Active Response</p>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="user-info">
+                    <div class="user-avatar">JD</div>
+                    <div class="user-name">John Doe</div>
+                    <div class="notification-icon">
+                        🔔
+                        <span class="notification-badge">3</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="dashboard-grid">
+                <div class="card stat-card">
+                    <div class="stat-icon volunteers">👥</div>
+                    <div class="stat-info">
+                        <h3>247</h3>
+                        <p>Active Volunteers</p>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon tasks">📋</div>
+                    <div class="stat-info">
+                        <h3>53</h3>
+                        <p>Open Tasks</p>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon resources">📦</div>
+                    <div class="stat-info">
+                        <h3>18,450</h3>
+                        <p>Resources Deployed</p>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon alerts">🚨</div>
+                    <div class="stat-info">
+                        <h3>5</h3>
+                        <p>Active Alerts</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Disaster Status -->
+            <div class="card disaster-status">
+                <div class="card-header">
+                    <h2>Hurricane Relief Status</h2>
+                    <button class="card-action">View Details</button>
+                </div>
+                <div class="status-labels">
+                    <div class="status-label active"><i>🟢</i> Day 3 of Response</div>
+                    <div class="status-label"><i>📍</i> Miami-Dade County</div>
+                    <div class="status-label"><i>🏢</i> 12 Shelters Open</div>
+                    <div class="status-label"><i>👥</i> 1,250 People Assisted</div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="percentage-info">
+                    <span>75% of Initial Response Complete</span>
+                    <span>Target: 100% by Day 5</span>
+                </div>
+            </div>
+            
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="map-container">
+                    <img src="/api/placeholder/1000/400" alt="Disaster Map" width="100%">
+                </div>
+                <div class="map-controls">
+                    <button class="map-control-btn">+</button>
+                    <button class="map-control-btn">-</button>
+                    <button class="map-control-btn">⊕</button>
+                </div>
+                <div class="map-legend">
+                    <div class="legend-item">
+                        <div class="legend-color red"></div>
+                        <span>Critical Areas</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color orange"></div>
+                        <span>Evacuation Zones</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color blue"></div>
+                        <span>Volunteer Locations</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color green"></div>
+                        <span>Relief Centers</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Two Column Layout -->
+            <div class="two-column-grid">
+                <!-- Tasks Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Active Tasks</h2>
+                        <button class="card-action">View All</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Assigned To</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Water Distribution</td>
+                                    <td>Shelter #3</td>
+                                    <td><span class="status-badge in-progress">In Progress</span></td>
+                                    <td>
+                                        <div class="avatar-group">
+                                            <div class="avatar">JD</div>
+                                            <div class="avatar">KS</div>
+                                            <div class="avatar">ML</div>
+                                        </div>
+                                    </td>
+                                    <td><button class="action-btn">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Medical Support</td>
+                                    <td>Shelter #7</td>
+                                    <td><span class="status-badge critical">Critical</span></td>
+                                    <td>
+                                        <div class="avatar-group">
+                                            <div class="avatar">DR</div>
+                                            <div class="avatar">AP</div>
+                                            <div class="avatar more">+3</div>
+                                        </div>
+                                    </td>
+                                    <td><button class="action-btn">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Supply Transport</td>
+                                    <td>Zone B</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>
+                                        <div class="avatar-group">
+                                            <div class="avatar">TM</div>
+                                            <div class="avatar">RK</div>
+                                        </div>
+                                    </td>
+                                    <td><button class="action-btn">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Debris Removal</td>
+                                    <td>Main Street</td>
+                                    <td><span class="status-badge completed">Completed</span></td>
+                                    <td>
+                                        <div class="avatar-group">
+                                            <div class="avatar">SJ</div>
+                                            <div class="avatar">BP</div>
+                                            <div class="avatar more">+5</div>
+                                        </div>
+                                    </td>
+                                    <td><button class="action-btn">View</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Emergency Contacts -->
+                <div>
+                    <div class="card emergency-contacts">
+                        <div class="card-header">
+                            <h2>Emergency Contacts</h2>
+                            <button class="card-action">View All</button>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-info">
+                                <div class="contact-name">Sarah Johnson</div>
+                                <div class="contact-role">Response Coordinator</div>
+                            </div>
+                            <div class="contact-action">
+                                <button class="contact-btn call">📞</button>
+                                <button class="contact-btn">💬</button>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-info">
+                                <div class="contact-name">Miguel Torres</div>
+                                <div class="contact-role">Medical Team Lead</div>
+                            </div>
+                            <div class="contact-action">
+                                <button class="contact-btn call">📞</button>
+                                <button class="contact-btn">💬</button>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-info">
+                                <div class="contact-name">Lisa Warren</div>
+                                <div class="contact-role">Supply Chain Manager</div>
+                            </div>
+                            <div class="contact-action">
+                                <button class="contact-btn call">📞</button>
+                                <button class="contact-btn">💬</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Updates -->
+                    <div class="card recent-updates">
+                        <div class="card-header">
+                            <h2>Recent Updates</h2>
+                            <button class="card-action">View All</button>
+                        </div>
+                        <div class="update-item">
+                            <div class="update-header">
+                                <div class="update-avatar">SJ</div>
+                                <div class="update-author">Sarah Johnson</div>
+                                <div class="update-time">15m ago</div>
+                            </div>
+                            <div class="update-content">
+                                Additional medical supplies have arrived at the main depot. Available for distribution.
+                            </div>
+                            <div class="update-meta">
+                                <div class="update-location">
+                                    <i>📍</i> Main Depot
+                                </div>
+                            </div>
+                        </div>
+                        <div class="update-item">
+                            <div class="update-header">
+                                <div class="update-avatar">MT</div>
+                                <div class="update-author">Miguel Torres</div>
+                                <div class="update-time">45m ago</div>
+                            </div>
+                            <div class="update-content">
+                                Shelter #7 is at capacity. Please direct evacuees to Shelters #9 and #12.
+                            </div>
+                            <div class="update-meta">
+                                <div class="update-location">
+                                    <i>📍</i> Shelter #7
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Alert</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f7f7f7;
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .notification {
+            width: 90%;
+            max-width: 400px;
+            background-color: rgba(0, 0, 0, 0.85);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100vh);
+            opacity: 0;
+            animation: slide-in 0.5s forwards;
+            pointer-events: auto;
+        }
+
+        .notification.emergency {
+            background-color: rgba(220, 53, 69, 0.95);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: white;
+        }
+
+        .notification-title {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        .notification-time {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+        }
+
+        .notification-body {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .notification-location {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .notification-location svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+            fill: rgba(255, 255, 255, 0.9);
+        }
+
+        .notification-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .notification-btn {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .notification-btn.primary {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slide-in {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes vibrate {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            animation: vibrate 0.3s linear infinite both;
+        }
+
+        /* Mock content for demonstration */
+        .app-content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mock content for demonstration -->
+    <div class="app-content">
+        <h1>Your App Content</h1>
+        <p>This is where your normal app content would be displayed.</p>
+        <button id="simulateAlert">Simulate Disaster Alert</button>
+    </div>
+
+    <!-- Notification container -->
+    <div class="notification-container" id="notification-container">
+        <!-- Notifications will be added here dynamically -->
+    </div>
+
+    <script>
+        // Sample disaster data
+        const disasterTypes = [
+            {
+                type: 'Hurricane',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Hurricane approaching. Take shelter immediately. High winds and flooding expected.',
+                locations: ['Miami-Dade County', 'Broward County', 'Palm Beach County']
+            },
+            {
+                type: 'Earthquake',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Magnitude 6.2 earthquake detected. Stay away from buildings and take cover.',
+                locations: ['Los Angeles County', 'Orange County', 'San Francisco County']
+            },
+            {
+                type: 'Flood',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Flash flood warning in effect. Move to higher ground immediately.',
+                locations: ['Harris County', 'Galveston County', 'Jefferson County']
+            },
+            {
+                type: 'Wildfire',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Wildfire spreading rapidly. Evacuation orders issued for affected areas.',
+                locations: ['San Diego County', 'Santa Barbara County', 'Ventura County']
+            },
+            {
+                type: 'Tornado',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Tornado warning in effect. Seek shelter in basement or interior room immediately.',
+                locations: ['Oklahoma County', 'Dallas County', 'Kansas City']
+            }
+        ];
+
+        // Function to create and show notification
+        function showNotification(disasterData) {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = 'notification emergency';
+            
+            // Get random location from the disaster type
+            const randomLocationIndex = Math.floor(Math.random() * disasterData.locations.length);
+            const location = disasterData.locations[randomLocationIndex];
+            
+            // Current time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            notification.innerHTML = `
+                <div class="notification-header">
+                    <div class="alert-icon">${disasterData.icon}</div>
+                    <div class="notification-title">EMERGENCY: ${disasterData.type} Alert</div>
+                    <div class="notification-time">${timeString}</div>
+                </div>
+                <div class="notification-body">${disasterData.message}</div>
+                <div class="notification-location">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    ${location}
+                </div>
+                <div class="notification-actions">
+                    <button class="notification-btn" onclick="this.parentElement.parentElement.remove()">Dismiss</button>
+                    <button class="notification-btn primary" onclick="window.location.href='safety-info.html'">Safety Info</button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Vibrate phone if supported
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            // Play alert sound
+            const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+            alertSound.play().catch(e => console.log('Audio play failed:', e));
+            
+            // Remove notification after some time (optional)
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(100vh)';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 30000); // 30 seconds
+        }
+
+        // For demonstration: show random alert when button is clicked
+        document.getElementById('simulateAlert').addEventListener('click', function() {
+            const randomIndex = Math.floor(Math.random() * disasterTypes.length);
+            showNotification(disasterTypes[randomIndex]);
+        });
+
+        // Function to connect to the backend socket
+        function connectToAlertSystem() {
+            // This would connect to your Node.js backend using Socket.io
+            // For demonstration, we're just showing how it would receive alerts
+            // In a real implementation, add socket.io-client.js and uncomment this code:
+            /*
+            const socket = io();
+            
+            socket.on('new-alert', function(alert) {
+                // Map the alert to our notification format
+                const disasterData = {
+                    type: alert.type,
+                    icon: getIconForDisasterType(alert.type),
+                    message: alert.description + ' ' + alert.instructions,
+                    locations: [alert.location.name]
+                };
+                showNotification(disasterData);
+            });
+            */
+        }
+
+        // Helper function to get icon based on disaster type
+        function getIconForDisasterType(type) {
+            // You would have more specific icons for each type
+            return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>';
+        }
+
+        // Initialize connection (commented out for demo)
+        // connectToAlertSystem();
+
+        // For demonstration purposes: show a notification on page load after a short delay
+        setTimeout(() => {
+            const randomIndex = Math.floor(Math.random() * disasterTypes.length);
+            showNotification(disasterTypes[randomIndex]);
+        }, 2000);
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Alert</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f7f7f7;
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .notification {
+            width: 90%;
+            max-width: 400px;
+            background-color: rgba(0, 0, 0, 0.85);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100vh);
+            opacity: 0;
+            animation: slide-in 0.5s forwards;
+            pointer-events: auto;
+        }
+
+        .notification.emergency {
+            background-color: rgba(220, 53, 69, 0.95);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: white;
+        }
+
+        .notification-title {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        .notification-time {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+        }
+
+        .notification-body {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .notification-location {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .notification-location svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+            fill: rgba(255, 255, 255, 0.9);
+        }
+
+        .notification-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .notification-btn {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .notification-btn.primary {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slide-in {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes vibrate {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            animation: vibrate 0.3s linear infinite both;
+        }
+
+        /* Mock content for demonstration */
+        .app-content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mock content for demonstration -->
+    <div class="app-content">
+        <h1>Your App Content</h1>
+        <p>This is where your normal app content would be displayed.</p>
+        <button id="simulateAlert">Simulate Disaster Alert</button>
+    </div>
+
+    <!-- Notification container -->
+    <div class="notification-container" id="notification-container">
+        <!-- Notifications will be added here dynamically -->
+    </div>
+
+    <script>
+        // Sample disaster data
+        const disasterTypes = [
+            {
+                type: 'Hurricane',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Hurricane approaching. Take shelter immediately. High winds and flooding expected.',
+                locations: ['Miami-Dade County', 'Broward County', 'Palm Beach County']
+            },
+            {
+                type: 'Earthquake',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Magnitude 6.2 earthquake detected. Stay away from buildings and take cover.',
+                locations: ['Los Angeles County', 'Orange County', 'San Francisco County']
+            },
+            {
+                type: 'Flood',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Flash flood warning in effect. Move to higher ground immediately.',
+                locations: ['Harris County', 'Galveston County', 'Jefferson County']
+            },
+            {
+                type: 'Wildfire',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Wildfire spreading rapidly. Evacuation orders issued for affected areas.',
+                locations: ['San Diego County', 'Santa Barbara County', 'Ventura County']
+            },
+            {
+                type: 'Tornado',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>',
+                message: 'Tornado warning in effect. Seek shelter in basement or interior room immediately.',
+                locations: ['Oklahoma County', 'Dallas County', 'Kansas City']
+            }
+        ];
+
+        // Function to create and show notification
+        function showNotification(disasterData) {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = 'notification emergency';
+            
+            // Get random location from the disaster type
+            const randomLocationIndex = Math.floor(Math.random() * disasterData.locations.length);
+            const location = disasterData.locations[randomLocationIndex];
+            
+            // Current time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            notification.innerHTML = `
+                <div class="notification-header">
+                    <div class="alert-icon">${disasterData.icon}</div>
+                    <div class="notification-title">EMERGENCY: ${disasterData.type} Alert</div>
+                    <div class="notification-time">${timeString}</div>
+                </div>
+                <div class="notification-body">${disasterData.message}</div>
+                <div class="notification-location">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    ${location}
+                </div>
+                <div class="notification-actions">
+                    <button class="notification-btn" onclick="this.parentElement.parentElement.remove()">Dismiss</button>
+                    <button class="notification-btn primary" onclick="window.location.href='safety-info.html'">Safety Info</button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Vibrate phone if supported
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            // Play alert sound
+            const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+            alertSound.play().catch(e => console.log('Audio play failed:', e));
+            
+            // Remove notification after some time (optional)
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(100vh)';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 30000); // 30 seconds
+        }
+
+        // For demonstration: show random alert when button is clicked
+        document.getElementById('simulateAlert').addEventListener('click', function() {
+            const randomIndex = Math.floor(Math.random() * disasterTypes.length);
+            showNotification(disasterTypes[randomIndex]);
+        });
+
+        // Function to connect to the backend socket
+        function connectToAlertSystem() {
+            // This would connect to your Node.js backend using Socket.io
+            // For demonstration, we're just showing how it would receive alerts
+            // In a real implementation, add socket.io-client.js and uncomment this code:
+            /*
+            const socket = io();
+            
+            socket.on('new-alert', function(alert) {
+                // Map the alert to our notification format
+                const disasterData = {
+                    type: alert.type,
+                    icon: getIconForDisasterType(alert.type),
+                    message: alert.description + ' ' + alert.instructions,
+                    locations: [alert.location.name]
+                };
+                showNotification(disasterData);
+            });
+            */
+        }
+
+        // Helper function to get icon based on disaster type
+        function getIconForDisasterType(type) {
+            // You would have more specific icons for each type
+            return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>';
+        }
+
+        // Initialize connection (commented out for demo)
+        // connectToAlertSystem();
+
+        // For demonstration purposes: show a notification on page load after a short delay
+        setTimeout(() => {
+            const randomIndex = Math.floor(Math.random() * disasterTypes.length);
+            showNotification(disasterTypes[randomIndex]);
+        }, 2000);
+    </script>
+</body>
+</html>

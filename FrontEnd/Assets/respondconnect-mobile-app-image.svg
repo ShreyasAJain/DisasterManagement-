@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 812">
+  <!-- Phone Outline -->
+  <rect width="375" height="812" rx="40" fill="#f1faee" />
+  
+  <!-- Status Bar -->
+  <rect x="0" y="0" width="375" height="30" fill="#1d3557" />
+  <text x="20" y="20" fill="white" font-family="Arial" font-size="12">9:41 AM</text>
+  <text x="340" y="20" fill="white" font-family="Arial" font-size="12">4G</text>
+  <text x="315" y="20" fill="white" font-family="Arial" font-size="12">●●●●</text>
+  
+  <!-- App Header -->
+  <rect x="0" y="30" width="375" height="60" fill="#1d3557" />
+  <text x="20" y="65" fill="white" font-family="Arial" font-size="18" font-weight="bold">Respond<tspan fill="#e63946">Connect</tspan></text>
+  <circle cx="345" cy="60" r="15" fill="#457b9d" />
+  <text x="345" y="66" fill="white" font-family="Arial" font-size="14" text-anchor="middle">🔔</text>
+  
+  <!-- Content Area -->
+  <rect x="0" y="90" width="375" height="672" fill="#f1faee" />
+  
+  <!-- Alert Banner -->
+  <rect x="15" y="105" width="345" height="70" rx="8" fill="#e63946" />
+  <text x="25" y="130" fill="white" font-family="Arial" font-size="14" font-weight="bold">ACTIVE ALERT: Hurricane Warning</text>
+  <text x="25" y="150" fill="white" font-family="Arial" font-size="12">Western Coast - Evacuation Recommended</text>
+  <rect x="285" y="125" width="60" height="25" rx="5" fill="white" />
+  <text x="315" y="142" fill="#e63946" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">View</text>
+  
+  <!-- Quick Actions Header -->
+  <text x="15" y="200" fill="#1d3557" font-family="Arial" font-size="16" font-weight="bold">Quick Actions</text>
+  
+  <!-- Quick Action Buttons -->
+  <rect x="15" y="215" width="105" height="90" rx="8" fill="white" stroke="#ddd" stroke-width="1" />
+  <text x="67" y="255" fill="#1d3557" font-family="Arial" font-size="22" text-anchor="middle">🆘</text>
+  <text x="67" y="285" fill="#1d3557" font-family="Arial" font-size="12" text-anchor="middle">Request Help</text>
+  
+  <rect x="135" y="215" width="105" height="90" rx="8" fill="white" stroke="#ddd" stroke-width="1" />
+  <text x="187" y="255" fill="#1d3557" font-family="Arial" font-size="22" text-anchor="middle">👋</text>
+  <text x="187" y="285" fill="#1d3557" font-family="Arial" font-size="12" text-anchor="middle">Volunteer</text>
+  
+  <rect x="255" y="215" width="105" height="90" rx="8" fill="white" stroke="#ddd" stroke-width="1" />
+  <text x="307" y="255" fill="#1d3557" font-family="Arial" font-size="22" text-anchor="middle">📦</text>
+  <text x="307" y="285" fill="#1d3557" font-family="Arial" font-size="12" text-anchor="middle">Donate</text>
+  
+  <!-- Nearby Resources Section -->
+  <text x="15" y="340" fill="#1d3557" font-family="Arial" font-size="16" font-weight="bold">Nearby Resources</text>
+  <text x="340" y="340" fill="#457b9d" font-family="Arial" font-size="12" text-anchor="end">View All</text>
+  
+  <!-- Resource Card 1 -->
+  <rect x="15" y="350" width="345" height="80" rx="8" fill="white" stroke="#ddd" stroke-width="1" />
+  <rect x="15" y="350" width="8" height="80" rx="4" fill="#4CAF50" />
+  <text x="33" y="375" fill="#1d3557" font-family="Arial" font-size="14" font-weight="bold">Westside Community Center</text>
+  <text x="33" y="395" fill="#666" font-family="Arial" font-size="12">Shelter • 1.2 miles away</text>
+  <text x="33" y="415" fill="#4CAF50" font-family="Arial" font-size="12">● Open</text>
+  <text x="78" y="415" fill="#666" font-family="Arial" font-size="12">Capacity: 65/100</text>
+  
+  <!-- Resource Card 2 -->
+  <rect x="15" y="440" width="345" height="80" rx="8" fill="white" stroke="#ddd" stroke-width="1" />
+  <rect x="15" y="440" width="8" height="80" rx="4" fill="#FFC107" />
+  <text x="33" y="465" fill="#1d3557" font-family="Arial" font-size="14" font-weight="bold">Central Food Distribution</text>
+  <text x="33" y="485" fill="#666" font-family="Arial" font-size="12">Supplies • 2.5 miles away</text>
+  <text x="33" y="505" fill="#FFC107" font-family="Arial" font-size="12">● Limited</text>
+  <text x="93" y="505" fill="#666" font-family="Arial" font-size="12">Water, Food, Blankets</text>
+  
+  <!-- My Tasks Section -->
+  <text x="15" y="550" fill="#1d3557" font-family="Arial" font-size="16" font-weight="bold">My Tasks</text>
+  <text x="340" y="550" fill="#457b9d" font-family="Arial" font-size="12" text-anchor="end">View All</text>
+  
+  <!-- Tasks Card -->
+  <rect x="15" y="560" width="345" height="100" rx="8" fill="white" stroke="#ddd" stroke-width="1" />
+  <text x="35" y="590" fill="#666" font-family="Arial" font-size="14">You have no assigned tasks</text>
+  <rect x="35" y="610" width="200" height="30" rx="15" fill="#e63946" />
+  <text x="135" y="630" fill="white" font-family="Arial" font-size="12" text-anchor="middle">Find Volunteer Opportunities</text>
+  
+  <!-- Bottom Navigation -->
+  <rect x="0" y="740" width="375" height="72" fill="white" stroke="#ddd" stroke-width="1" />
+  
+  <!-- Home Tab (Active) -->
+  <text x="47" y="770" fill="#e63946" font-family="Arial" font-size="22" text-anchor="middle">🏠</text>
+  <text x="47" y="795" fill="#e63946" font-family="Arial" font-size="12" text-anchor="middle">Home</text>
+  
+  <!-- Map Tab -->
+  <text x="140" y="770" fill="#666" font-family="Arial" font-size="22" text-anchor="middle">🗺️</text>
+  <text x="140" y="795" fill="#666" font-family="Arial" font-size="12" text-anchor="middle">Map</text>
+  
+  <!-- Alerts Tab -->
+  <text x="233" y="770" fill="#666" font-family="Arial" font-size="22" text-anchor="middle">🔔</text>
+  <text x="233" y="795" fill="#666" font-family="Arial" font-size="12" text-anchor="middle">Alerts</text>
+  
+  <!-- Profile Tab -->
+  <text x="326" y="770" fill="#666" font-family="Arial" font-size="22" text-anchor="middle">👤</text>
+  <text x="326" y="795" fill="#666" font-family="Arial" font-size="12" text-anchor="middle">Profile</text>
+</svg>

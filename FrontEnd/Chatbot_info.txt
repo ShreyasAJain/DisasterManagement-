@@ -1,0 +1,59 @@
+Natural Disaster: Earthquake
+
+Definition:
+An earthquake is the shaking of the surface of the Earth resulting from a sudden release of energy in the Earth's lithosphere that creates seismic waves.
+
+Causes:
+- Tectonic plate movements
+- Volcanic eruptions
+- Human activities (e.g., mining, reservoir-induced seismicity)
+
+Effects:
+- Ground shaking
+- Building and infrastructure collapse
+- Landslides
+- Tsunamis (if underwater)
+- Casualties and injuries
+- Economic loss and displacement
+
+Preparedness Tips:
+1. Create an emergency kit (water, food, flashlight, first aid).
+2. Identify safe spots in each room (under sturdy furniture, against inside walls).
+3. Practice “Drop, Cover, and Hold On” drills.
+4. Secure heavy items and appliances.
+5. Have a communication and evacuation plan.
+
+During an Earthquake:
+- Indoors: Drop, cover under sturdy furniture, and hold on.
+- Outdoors: Move to an open area away from buildings and power lines.
+- In a vehicle: Pull over and stop away from overpasses and bridges.
+
+After an Earthquake:
+- Check for injuries and help others.
+- Inspect for gas leaks, fires, or structural damage.
+- Be prepared for aftershocks.
+- Stay informed via radio or alerts.
+- Avoid damaged areas unless authorized.
+
+Famous Earthquakes:
+- 2004 Indian Ocean Earthquake and Tsunami
+- 2010 Haiti Earthquake
+- 2011 Tōhoku Earthquake and Tsunami (Japan)
+- 1906 San Francisco Earthquake
+
+Fun Fact:
+The largest recorded earthquake was a magnitude 9.5 in Chile in 1960.
+
+Chatbot Response Templates:
+Q: What is an earthquake?
+A: An earthquake is the sudden shaking of the Earth's surface caused by a release of energy underground, usually due to shifting tectonic plates.
+
+Q: How can I stay safe during an earthquake?
+A: Drop, cover under a sturdy object, and hold on until the shaking stops. Stay indoors if you're inside, and move to open ground if you're outside.
+
+Q: What should I do after an earthquake?
+A: Check yourself and others for injuries, watch out for hazards like gas leaks, and be prepared for aftershocks.
+
+Q: Can earthquakes be predicted?
+A: No, earthquakes cannot be predicted accurately yet, though scientists can identify risk zones based on geological data.
+
